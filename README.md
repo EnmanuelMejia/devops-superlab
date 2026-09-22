@@ -63,8 +63,17 @@ Kubernetes · kind · Kustomize · Helm · Argo CD · GitHub Actions · Docker/B
 **Enmanuel Mejia** — Junior Cloud / DevOps candidate  
 Orlando, FL · targeting Boston · Orlando · Miami–Fort Lauderdale · Remote  
 GitHub: https://github.com/EnmanuelMejia  
-Lab site: https://interstitiumlabs.dev  
+Lab site: https://interstitiumlabs.dev/labs/superlab/  
 LinkedIn: https://www.linkedin.com/in/enmanuelmejia
+
+
+## Interstitium Labs hub
+
+Public Learning OS page for this lab (student quickstart, stack map, honest scope):
+
+**https://interstitiumlabs.dev/labs/superlab/**
+
+[![Interstitium Labs](https://img.shields.io/badge/Interstitium%20Labs-SuperLab%20hub-5eead4?style=flat-square&labelColor=070B16)](https://interstitiumlabs.dev/labs/superlab/)
 
 ## License
 
