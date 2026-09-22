@@ -1,19 +1,71 @@
-# DevOps SuperLab (Bootstrap)
+# DevOps SuperLab
 
-This repo contains:
-- `scripts/self-test.fish` — quick smoke test (calls your `~/devops-status.fish` if present)
-- `scripts/git-publish.fish` — push this repo to GitHub
-- Fish helper functions:
-  - `db-services-on` — stop lab containers, enable/start system DB services (PostgreSQL, MariaDB, Valkey/Redis)
-  - `db-labs-on` — stop system DB services, start containerized DB labs (compose files in `~/labs/db`)
+**Portfolio lab (not paid production)** — an interview-ready Kubernetes / GitOps / CI/CD / IaC demo by [Enmanuel Mejia](https://github.com/EnmanuelMejia).
 
-> You already provisioned tools and labs across DevOps, Cloud, Security, Databases, and Java/.NET/Python stacks earlier.  
-> These scripts give you a clean toggle + a GitHub-ready wrapper, without re-installing everything.
+Built to walk hiring managers through a live stack: local kind cluster, Kustomize overlays, Argo CD, GitHub Actions, policy gates, and observability docs.
+
+> This repository demonstrates hands-on cloud/DevOps skills beyond paid IT operations experience. It is **not** a customer production deployment.
+
+## What you can demo
+
+| Area | What’s in the repo |
+| --- | --- |
+| Local cluster | `kind` bootstrap + ingress / metrics (`make kind-up`) |
+| Deploy | Kustomize-oriented Makefile targets for env apply flows |
+| GitOps | Argo CD install manifests + app-of-apps |
+| CI/CD | GitHub Actions: CI, security, docs, Kustomize validate, Helm OCI release |
+| Policy | Gatekeeper constraints + Conftest Rego |
+| Docs | MkDocs site (`docs/`) covering quickstart, GitOps, pipelines, ops |
+| Supply chain hygiene | pre-commit, Renovate |
 
 ## Quickstart
 
 ```bash
-# run from your shell
-fish ~/devops-superlab/scripts/self-test.fish
-# if PASS:
-fish ~/devops-superlab/scripts/git-publish.fish
+# tooling hooks
+make bootstrap
+
+# local cluster
+make kind-up
+
+# apply a documented env flow (see Makefile / docs)
+make kustomize-dev
+kubectl -n superlab-dev get deploy,svc,hpa
+
+# tear down
+make kind-down
+```
+
+Full walkthrough: [`docs/quickstart.md`](docs/quickstart.md) · site config: [`mkdocs.yml`](mkdocs.yml)
+
+## Repository map
+
+```
+.github/workflows/   CI, security scans, docs publish, validate, Helm OCI
+docs/                Interview-oriented documentation (MkDocs)
+gitops/argocd/       Argo CD install + app-of-apps
+policies/            Gatekeeper + Conftest
+scripts/             kind bootstrap, image build/push, tests, smoke checks
+Makefile             Operator entrypoints
+```
+
+## Honest scope (important for recruiters)
+
+- **Is:** a structured portfolio / lab for demos and interviews.
+- **Is not:** evidence of paid production ownership at an employer.
+- Scripts such as `scripts/self-test.fish` still assume some host-local helpers (for example `~/devops-status.fish`). Treat those as optional machine-local wiring; the documented `make` targets and `docs/` are the portable path.
+
+## Stack
+
+Kubernetes · kind · Kustomize · Helm · Argo CD · GitHub Actions · Docker/Buildx · Gatekeeper · Conftest · Prometheus/Grafana docs · Terraform (IaC practices in lab narrative) · Linux
+
+## Author
+
+**Enmanuel Mejia** — Junior Cloud / DevOps candidate  
+Orlando, FL · targeting Boston · Orlando · Miami–Fort Lauderdale · Remote  
+GitHub: https://github.com/EnmanuelMejia  
+Lab site: https://interstitiumlabs.dev  
+LinkedIn: https://www.linkedin.com/in/enmanuelmejia
+
+## License
+
+No license file yet — all rights reserved unless/until an SPDX license is added.

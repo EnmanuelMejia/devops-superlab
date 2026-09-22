@@ -20,8 +20,8 @@ else
 end
 
 header "DB toggle sanity"
-functions | grep -q '^db-services-on$'; and echo "[OK] db-services-on" ; or begin; echo "[MISS] db-services-on"; set FAIL 1; end
-functions | grep -q '^db-labs-on$'; and echo "[OK] db-labs-on" ; or begin; echo "[MISS] db-labs-on"; set FAIL 1; end
+functions | grep -q '^db-services-on$'; and echo "[OK] db-services-on" ; or echo "[WARN] db-services-on (host-local helper; optional)"
+functions | grep -q '^db-labs-on$'; and echo "[OK] db-labs-on" ; or echo "[WARN] db-labs-on (host-local helper; optional)"
 
 header "podman ps snapshot"
 podman ps --format '{{.Names}}\t{{.Status}}\t{{.Ports}}' | sort | sed 's/^/[PODMAN] /'
