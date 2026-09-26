@@ -29,19 +29,27 @@ spec:
 YAML
 }
 
-echo "==> a pod without requests or limits must be denied"
-for _ in $(seq 1 30); do
-  if out="$(probe 2>&1)"; then
-    sleep 3  # constraints can take a few seconds to reach the webhook
-  else
+echo "==> a pod without requests or limits must be denied by both constraints"
+# Constraints take a few seconds to reach the webhook, and Gatekeeper's
+# webhook replicas load them independently, so an early denial may name only
+# one of the two. Keep probing until a single denial names both.
+denied=0
+out=""
+for _ in $(seq 1 40); do
+  if ! out="$(probe 2>&1)" \
+    && grep -q 'superlab-container-limits' <<<"$out" \
+    && grep -q 'superlab-container-requests' <<<"$out"; then
     echo "$out"
-    grep -q 'superlab-container-limits' <<<"$out" && grep -q 'superlab-container-requests' <<<"$out" \
-      && { denied=1; break; }
-    echo "[fail] rejected, but not by the lab's constraints" >&2
-    exit 1
+    denied=1
+    break
   fi
+  sleep 3
 done
-[ "${denied:-0}" = 1 ] || { echo "[fail] Gatekeeper admitted a pod without requests or limits" >&2; exit 1; }
+if [ "$denied" != 1 ]; then
+  echo "last response: ${out}" >&2
+  echo "[fail] Gatekeeper did not reject a pod without requests or limits with both lab constraints" >&2
+  exit 1
+fi
 
 echo "==> a compliant rollout must still be admitted"
 kubectl -n "$NS" rollout restart deploy/podinfo

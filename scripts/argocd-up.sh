@@ -15,7 +15,12 @@ done
 kubectl -n argocd rollout status statefulset/argocd-application-controller --timeout=300s
 
 echo "==> application superlab-dev tracking ${REVISION}"
-sed "s#targetRevision: main#targetRevision: ${REVISION}#" gitops/argocd/apps/superlab-dev.yaml | kubectl apply -f -
+# Branch names can hold characters that are special to sed or YAML, so set the
+# revision with a local JSON merge patch (only " and \ need escaping in JSON).
+rev_json="${REVISION//\\/\\\\}"
+rev_json="${rev_json//\"/\\\"}"
+kubectl patch --local -f gitops/argocd/apps/superlab-dev.yaml --type merge \
+  -p "{\"spec\":{\"source\":{\"targetRevision\":\"${rev_json}\"}}}" -o yaml | kubectl apply -f -
 kubectl -n argocd wait application/superlab-dev --for=jsonpath='{.status.sync.status}'=Synced --timeout=300s
 kubectl -n argocd wait application/superlab-dev --for=jsonpath='{.status.health.status}'=Healthy --timeout=300s
 echo "[ok] Argo CD synced superlab-dev from ${REVISION}"

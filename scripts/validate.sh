@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Offline checks, no cluster needed: render every overlay, validate it
-# against the Kubernetes schemas, and test it against the lab's policy.
+# Checks that need no cluster: render every overlay, validate it against
+# the Kubernetes schemas, and test it against the lab's policy. kubeconform
+# downloads the schemas, so this needs network access on the first run.
 # Used by `make validate` and CI.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -21,7 +22,7 @@ done
 echo "==> Argo CD application"
 kubeconform -strict -summary \
   -schema-location default \
-  -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+  -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/ad3b08c5045129d7bb1eeffd8e61719b2c8dd1e2/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
   gitops/argocd/apps
 
 echo "==> cluster add-ons render"

@@ -15,7 +15,16 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: superlab-dev
+  # The HPA owns the replica count. Without this, selfHeal would reset every
+  # scale-up back to the replicas value in Git.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - RespectIgnoreDifferences=true

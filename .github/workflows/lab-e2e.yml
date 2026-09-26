@@ -60,6 +60,10 @@ jobs:
           make gatekeeper-bootstrap
           make policy-test
       - name: Argo CD syncs the dev overlay
+        # Argo CD pulls from this repository, where a fork's branch doesn't exist.
+        if: >-
+          github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         env:
           REVISION: ${{ github.head_ref || github.ref_name }}
         run: make argocd-bootstrap
