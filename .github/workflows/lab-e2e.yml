@@ -64,7 +64,7 @@ jobs:
           REVISION: ${{ github.head_ref || github.ref_name }}
         run: make argocd-bootstrap
       - name: Optional observability stack
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.observability }}
+        if: ${{ always() }}  # TEMPORARY: verification branch only, never merged
         run: |
           make observability-up
           ./scripts/observability-check.sh
