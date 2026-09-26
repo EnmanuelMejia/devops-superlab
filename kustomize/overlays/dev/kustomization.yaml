@@ -1,0 +1,16 @@
+---
+# Development: one replica, scales to three.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: superlab-dev
+labels:
+  - pairs:
+      environment: dev
+resources:
+  - namespace.yaml
+  - ../../base
+configMapGenerator:
+  - name: podinfo-config
+    behavior: merge
+    literals:
+      - PODINFO_UI_MESSAGE=DevOps SuperLab · dev

@@ -1,5 +1,5 @@
 site_name: DevOps Superlab
-site_description: A full-stack DevOps Superlab by Enmanuel Mejia
+site_description: A Kubernetes, GitOps and policy-as-code lab by Enmanuel Mejia
 repo_url: https://github.com/EnmanuelMejia/devops-superlab
 theme:
   name: material
@@ -11,6 +11,8 @@ plugins:
   - search
 markdown_extensions:
   - admonition
+  # Lets fenced code blocks sit inside list items, as the quickstart does.
+  - pymdownx.superfences
   - toc:
       permalink: true
 nav:
@@ -23,7 +25,7 @@ nav:
   - CI/CD:
       - Pipelines: cicd/pipelines.md
   - Apps:
-      - Services: apps/services.md
+      - Workload: apps/workload.md
   - Ops:
       - Observability: ops/observability.md
       - Policies: ops/policy.md

@@ -1,10 +1,2 @@
-# default owners
+# default owner
 * @EnmanuelMejia
-/services/node-express/ @EnmanuelMejia
-/services/go-chi/ @EnmanuelMejia
-/services/dotnet-minimal/ @EnmanuelMejia
-/services/spring-boot/ @EnmanuelMejia
-/services/api-gateway/ @EnmanuelMejia
-/services/web-frontend/ @EnmanuelMejia
-/kustomize/ @EnmanuelMejia
-/helm/ @EnmanuelMejia
