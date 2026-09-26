@@ -1,46 +1,62 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
+# Pinned tools from `make tools` take precedence over whatever is on PATH.
+export PATH := $(CURDIR)/.bin:$(PATH)
+
+ENV ?= dev
+
 help: ## show available targets
 	@awk 'BEGIN{FS=":.*##"; printf "\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/{printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-bootstrap: ## install dev tooling locally (pre-commit hooks)
-	pre-commit install -t pre-commit -t commit-msg || true
+tools: ## install pinned kubectl, kind, kubeconform and conftest into ./.bin (Linux x86_64)
+	./scripts/install-tools.sh
 
-lint: ## run multi-language linters
+bootstrap: ## install the pre-commit hooks
+	pre-commit install
+
+lint: ## run every pre-commit hook on every file
 	pre-commit run --all-files
 
-test: ## run unit tests where available
-	./scripts/run-tests.sh
+validate: ## offline: render overlays, check schemas and policy
+	./scripts/validate.sh
 
-build-images: ## build all service images locally (no push)
-	./scripts/build-images.sh
-
-push-images: ## buildx + push to GHCR (requires GHCR login)
-	./scripts/push-images.sh
-
-kustomize-dev: ## apply dev overlay
-	fish ./scripts/kustomize-apply-dev.fish
-
-kustomize-stage: ## apply stage overlay
-	fish ./scripts/kustomize-apply-stage.fish
-
-kustomize-prod: ## apply prod overlay
-	fish ./scripts/kustomize-apply-prod.fish
-
-kind-up: ## create kind cluster + install addons (metrics, ingress, monitoring, logging)
+kind-up: ## create the kind cluster and install metrics-server
 	./scripts/kind-superlab-up.sh
 
-kind-down: ## delete kind cluster
-	kind delete cluster --name superlab || true
+kind-down: ## delete the kind cluster
+	kind delete cluster --name superlab
 
-argocd-bootstrap: ## install Argo CD and app-of-apps
-	kubectl apply -f ./gitops/argocd/install
-	kubectl apply -f ./gitops/argocd/apps
+deploy: ## apply one overlay and wait for it: make deploy ENV=dev|stage|prod
+	kubectl apply -k kustomize/overlays/$(ENV)
+	kubectl -n superlab-$(ENV) rollout status deploy/podinfo --timeout=180s
 
-gatekeeper-bootstrap: ## install gatekeeper + starter constraints
-	kubectl apply -f ./policies/gatekeeper/install
-	kubectl apply -f ./policies/gatekeeper/constraints
+kustomize-dev: ## apply the dev overlay
+	$(MAKE) deploy ENV=dev
 
-docs-serve: ## serve MkDocs locally
+kustomize-stage: ## apply the stage overlay
+	$(MAKE) deploy ENV=stage
+
+kustomize-prod: ## apply the prod overlay
+	$(MAKE) deploy ENV=prod
+
+smoke: ## check a deployed environment end to end: make smoke ENV=dev
+	./scripts/smoke.sh $(ENV)
+
+gatekeeper-bootstrap: ## install Gatekeeper and enforce requests/limits in superlab-* namespaces
+	./scripts/gatekeeper-up.sh
+
+policy-test: ## prove Gatekeeper rejects a pod without requests or limits
+	./scripts/policy-e2e.sh
+
+argocd-bootstrap: ## install Argo CD and sync the dev overlay from GitHub
+	./scripts/argocd-up.sh
+
+observability-up: ## optional: Prometheus, Alertmanager and Grafana, scraping podinfo
+	./scripts/observability-up.sh
+
+docs-serve: ## serve the MkDocs site locally
 	mkdocs serve -a 0.0.0.0:8000
+
+.PHONY: help tools bootstrap lint validate kind-up kind-down deploy kustomize-dev kustomize-stage kustomize-prod \
+	smoke gatekeeper-bootstrap policy-test argocd-bootstrap observability-up docs-serve

@@ -18,5 +18,7 @@ rules:
   # Actions pinned to a 40-character commit SHA with a "# vX" note run long.
   line-length:
     max: 120
+    # Pinned image references and URLs cannot be wrapped.
+    allow-non-breakable-inline-mappings: true
   comments:
     min-spaces-from-content: 1
