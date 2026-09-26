@@ -1,0 +1,30 @@
+---
+# Staging: two replicas, scales to four.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: superlab-stage
+labels:
+  - pairs:
+      environment: stage
+resources:
+  - namespace.yaml
+  - ../../base
+configMapGenerator:
+  - name: podinfo-config
+    behavior: merge
+    literals:
+      - PODINFO_UI_MESSAGE=DevOps SuperLab · stage
+replicas:
+  - name: podinfo
+    count: 2
+patches:
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: podinfo
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 2
+      - op: replace
+        path: /spec/maxReplicas
+        value: 4

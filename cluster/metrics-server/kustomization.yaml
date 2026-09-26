@@ -1,0 +1,17 @@
+---
+# metrics-server feeds the HorizontalPodAutoscalers. kind's kubelets use
+# self-signed serving certificates, so the lab skips kubelet TLS
+# verification; do not copy that flag to a real cluster.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: metrics-server
+      namespace: kube-system
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --kubelet-insecure-tls
