@@ -1,0 +1,10 @@
+---
+# Every lab namespace enforces the Pod Security "restricted" profile.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: superlab-stage
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted

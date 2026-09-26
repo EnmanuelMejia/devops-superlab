@@ -1,0 +1,10 @@
+---
+# Local lab cluster: one control plane and two workers, so the prod overlay's
+# topology spread and disruption budget have more than one node to act on.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: superlab
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker

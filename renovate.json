@@ -2,13 +2,5 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
-  "timezone": "America/New_York",
-  "packageRules": [
-    { "matchManagers": ["dockerfile"], "groupName": "docker base images" },
-    { "matchManagers": ["npm"], "groupName": "js deps (all)" },
-    { "matchManagers": ["gomod"], "groupName": "go modules" },
-    { "matchManagers": ["pip_requirements"], "groupName": "python deps" },
-    { "matchManagers": ["maven"], "groupName": "java deps" },
-    { "matchManagers": ["nuget"], "groupName": ".NET deps" }
-  ]
+  "timezone": "America/New_York"
 }

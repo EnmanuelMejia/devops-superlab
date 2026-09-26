@@ -1,0 +1,77 @@
+---
+# Builds the whole lab in a throwaway kind cluster: deploys every overlay,
+# smoke-tests dev, proves Gatekeeper rejects non-compliant pods, and lets
+# Argo CD sync the dev overlay from this branch.
+name: Lab e2e
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "kustomize/**"
+      - "gitops/**"
+      - "policies/**"
+      - "cluster/**"
+      - "observability/**"
+      - "scripts/**"
+      - "Makefile"
+      - ".github/workflows/lab-e2e.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "kustomize/**"
+      - "gitops/**"
+      - "policies/**"
+      - "cluster/**"
+      - "observability/**"
+      - "scripts/**"
+      - "Makefile"
+      - ".github/workflows/lab-e2e.yml"
+  schedule:
+    - cron: "41 6 * * 1"  # weekly: catches upstream drift in pinned add-ons
+  workflow_dispatch:
+    inputs:
+      observability:
+        description: Also install and check the optional observability stack
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: lab-e2e-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - name: Install pinned tools (checksum-verified)
+        run: |
+          ./scripts/install-tools.sh "$RUNNER_TEMP/bin"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Create kind cluster and metrics-server
+        run: make kind-up
+      - name: Deploy every overlay
+        run: for env in dev stage prod; do make deploy ENV="$env"; done
+      - name: Smoke-test dev (health, message, HPA metrics)
+        run: make smoke ENV=dev
+      - name: Gatekeeper admission policy
+        run: |
+          make gatekeeper-bootstrap
+          make policy-test
+      - name: Argo CD syncs the dev overlay
+        env:
+          REVISION: ${{ github.head_ref || github.ref_name }}
+        run: make argocd-bootstrap
+      - name: Optional observability stack
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.observability }}
+        run: |
+          make observability-up
+          ./scripts/observability-check.sh
+      - name: Diagnostics
+        if: failure()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl get pods -A -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -n 80 || true
+          kubectl -n argocd get application superlab-dev -o yaml || true

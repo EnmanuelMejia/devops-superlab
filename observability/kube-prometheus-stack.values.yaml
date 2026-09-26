@@ -1,0 +1,26 @@
+---
+# Lab-sized kube-prometheus-stack for the kind cluster.
+# kind binds etcd, the scheduler, the controller manager and kube-proxy
+# metrics to 127.0.0.1, so scraping them would only raise alerts about
+# unreachable targets. They stay off here.
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    retention: 2d
+    # Select PodMonitors and ServiceMonitors from every namespace, not only
+    # the ones labelled for this Helm release.
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+grafana:
+  defaultDashboardsTimezone: browser

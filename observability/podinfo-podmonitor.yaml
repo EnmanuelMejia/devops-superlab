@@ -1,0 +1,18 @@
+---
+# Prometheus scrapes podinfo's /metrics (port http-metrics) in every lab
+# namespace. Kept out of the overlays so they apply without the operator.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: podinfo
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames: [superlab-dev, superlab-stage, superlab-prod]
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: podinfo
+  podMetricsEndpoints:
+    - port: http-metrics
+      path: /metrics
+      interval: 30s
