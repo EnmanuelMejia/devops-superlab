@@ -13,7 +13,7 @@ Built to walk hiring managers through a live stack: local kind cluster, Kustomiz
 | Local cluster | `kind` bootstrap + ingress / metrics (`make kind-up`) |
 | Deploy | Kustomize-oriented Makefile targets for env apply flows |
 | GitOps | Argo CD install manifests + app-of-apps |
-| CI/CD | GitHub Actions: CI, security, docs, Kustomize validate, Helm OCI release |
+| CI/CD | GitHub Actions: CI, security, docs, Helm OCI release |
 | Policy | Gatekeeper constraints + Conftest Rego |
 | Docs | MkDocs site (`docs/`) covering quickstart, GitOps, pipelines, ops |
 | Supply chain hygiene | pre-commit, Renovate |
