@@ -60,10 +60,10 @@ Kubernetes · kind · Kustomize · Helm · Argo CD · GitHub Actions · Docker/B
 
 ## Author
 
-**Enmanuel Mejia** — Junior Cloud / DevOps candidate  
-Orlando, FL · targeting Boston · Orlando · Miami–Fort Lauderdale · Remote  
-GitHub: https://github.com/EnmanuelMejia  
-Lab site: https://interstitiumlabs.dev/labs/superlab/  
+**Enmanuel Mejia** — Junior Cloud / DevOps candidate
+Orlando, FL · targeting Boston · Orlando · Miami–Fort Lauderdale · Remote
+GitHub: https://github.com/EnmanuelMejia
+Lab site: https://interstitiumlabs.dev/labs/superlab/
 LinkedIn: https://www.linkedin.com/in/enmanuelmejia
 
 
