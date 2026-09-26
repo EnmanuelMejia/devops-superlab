@@ -1,0 +1,22 @@
+---
+# yamllint settings for GitHub Actions workflows and Kubernetes manifests.
+# Structural rules (syntax, indentation, duplicate keys) stay at the
+# defaults; only layout conventions these files use on purpose are relaxed.
+extends: default
+
+rules:
+  # Workflows and manifests here start without "---".
+  document-start: disable
+  # GitHub Actions uses the bare key "on:".
+  truthy:
+    check-keys: false
+  # Flow style such as [ "main" ] and { node-version: '20' } is used throughout.
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
+  # Actions pinned to a 40-character commit SHA with a "# vX" note run long.
+  line-length:
+    max: 120
+  comments:
+    min-spaces-from-content: 1
