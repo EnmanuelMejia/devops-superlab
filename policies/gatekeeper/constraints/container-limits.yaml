@@ -1,0 +1,18 @@
+---
+# Every container in a lab namespace must declare CPU and memory limits,
+# each below the ceiling set here. Scoped to superlab-* so cluster add-ons
+# are not affected.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: superlab-container-limits
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["superlab-*"]
+  parameters:
+    cpu: "2"
+    memory: 1Gi

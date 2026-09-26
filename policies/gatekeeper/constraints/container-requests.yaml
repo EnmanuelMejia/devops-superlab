@@ -1,0 +1,17 @@
+---
+# Every container in a lab namespace must declare CPU and memory requests,
+# each below the ceiling set here.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerRequests
+metadata:
+  name: superlab-container-requests
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["superlab-*"]
+  parameters:
+    cpu: "1"
+    memory: 512Mi

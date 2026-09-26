@@ -1,0 +1,6 @@
+---
+# Gatekeeper, from the upstream release manifest pinned to one version.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.23.1/deploy/gatekeeper.yaml

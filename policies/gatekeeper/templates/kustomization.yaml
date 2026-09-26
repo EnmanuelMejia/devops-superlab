@@ -1,0 +1,8 @@
+---
+# Constraint templates from the Gatekeeper policy library, pinned to one
+# commit (open-policy-agent/gatekeeper-library, Apache-2.0).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/b6c6b501a71bdccbbf3d3dc459c7813c3d681cf4/library/general/containerlimits/template.yaml
+  - https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/b6c6b501a71bdccbbf3d3dc459c7813c3d681cf4/library/general/containerrequests/template.yaml
