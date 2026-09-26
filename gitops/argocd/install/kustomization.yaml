@@ -1,0 +1,10 @@
+---
+# Argo CD, from the upstream install manifest pinned to one release.
+# Apply server-side (the ApplicationSet CRD is too large for client-side
+# apply): kubectl apply --server-side --force-conflicts -k gitops/argocd/install
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - namespace.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.5.3/manifests/install.yaml

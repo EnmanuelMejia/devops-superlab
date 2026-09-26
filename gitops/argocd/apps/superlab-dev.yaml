@@ -1,17 +1,20 @@
+---
+# Argo CD keeps superlab-dev in sync with kustomize/overlays/dev on main:
+# a merged change rolls out without kubectl, and manual drift is reverted.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: superlab-root
+  name: superlab-dev
   namespace: argocd
 spec:
-  destination:
-    namespace: argocd
-    server: https://kubernetes.default.svc
   project: default
   source:
     repoURL: https://github.com/EnmanuelMejia/devops-superlab.git
     targetRevision: main
     path: kustomize/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: superlab-dev
   syncPolicy:
     automated:
       prune: true
