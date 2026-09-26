@@ -11,6 +11,8 @@ plugins:
   - search
 markdown_extensions:
   - admonition
+  # Lets fenced code blocks sit inside list items, as the quickstart does.
+  - pymdownx.superfences
   - toc:
       permalink: true
 nav:

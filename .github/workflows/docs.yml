@@ -8,11 +8,8 @@ on:
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
-# GitHub Pages requires these permissions
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Make sure only one Pages deployment runs at a time
 concurrency:
@@ -32,7 +29,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install MkDocs
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material==9.7.7
 
       - name: Build site
         run: mkdocs build --strict
@@ -45,6 +42,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # Only this job publishes, so only this job can write to Pages.
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

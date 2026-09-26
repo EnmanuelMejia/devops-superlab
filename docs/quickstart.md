@@ -8,7 +8,7 @@ You need Docker, `make` and `bash`. Helm is only needed for the optional observa
    ```
    Elsewhere, install kubectl, kind, kubeconform and conftest with your package manager.
 
-2. **Offline checks.** Render every overlay, validate it against the Kubernetes schemas, and test it against the lab policy:
+2. **Checks without a cluster.** Render every overlay, validate it against the Kubernetes schemas (downloaded on first use), and test it against the lab policy:
    ```bash
    make validate
    ```

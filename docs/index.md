@@ -8,7 +8,7 @@ A Kubernetes, GitOps, CI/CD and policy-as-code lab, built so every claim can be 
 
 - **Environments:** dev, stage and prod Kustomize overlays over one workload ([podinfo](https://github.com/stefanprodan/podinfo)), with autoscaling, a disruption budget and topology spread in prod.
 - **Security by default:** every lab namespace enforces Pod Security "restricted"; the workload runs non-root with a read-only root filesystem and no Linux capabilities.
-- **Policy twice:** Conftest checks rendered manifests in CI; Gatekeeper rejects non-compliant pods at admission.
+- **Policy twice:** Conftest checks rendered manifests in CI; in the cluster, Gatekeeper rejects containers without requests and limits, and Pod Security "restricted" rejects pods that could run as root or escalate privileges.
 - **GitOps:** Argo CD keeps the dev environment in sync with `main`.
 - **Proven in CI:** a GitHub Actions workflow creates a kind cluster, deploys every overlay, smoke-tests dev, proves the admission policy and waits for Argo CD to sync.
 

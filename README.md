@@ -6,7 +6,7 @@
 
 **Portfolio lab (not paid production)**: a Kubernetes, GitOps, CI/CD and policy-as-code lab by [Enmanuel Mejia](https://github.com/EnmanuelMejia), built so every claim below can be run and checked.
 
-The lab deploys a small real service, [podinfo](https://github.com/stefanprodan/podinfo), to a local kind cluster through Kustomize overlays. It enforces the same resource and security rules twice: in CI with Conftest, and at admission time with Gatekeeper. Argo CD keeps the dev environment in sync with `main`, and a GitHub Actions workflow builds the whole lab in a throwaway cluster on every change.
+The lab deploys a small real service, [podinfo](https://github.com/stefanprodan/podinfo), to a local kind cluster through Kustomize overlays. Conftest checks every rendered manifest in CI, and the cluster enforces the rules again at admission: Gatekeeper rejects containers without CPU and memory requests and limits, and Pod Security "restricted" rejects pods that could run as root or escalate privileges. Argo CD keeps the dev environment in sync with `main`, and a GitHub Actions workflow builds the whole lab in a throwaway cluster on every change.
 
 > This repository demonstrates hands-on cloud/DevOps skills beyond paid IT operations experience. It is **not** a customer production deployment.
 
@@ -21,7 +21,7 @@ The lab deploys a small real service, [podinfo](https://github.com/stefanprodan/
 | Policy at admission | Gatekeeper with library templates enforcing requests and limits in `superlab-*` namespaces | Lab e2e rejects a non-compliant pod |
 | GitOps | Argo CD (pinned upstream install) syncing `kustomize/overlays/dev` from GitHub | Lab e2e waits for Synced and Healthy |
 | Observability (optional) | kube-prometheus-stack; Prometheus scrapes podinfo through a PodMonitor | Lab e2e, manual run |
-| CI/CD | pre-commit lint, offline validation, kind e2e, Trivy and Checkov scans, MkDocs to GitHub Pages | GitHub Actions |
+| CI/CD | pre-commit lint, schema and policy validation, kind e2e, Trivy and Checkov scans, MkDocs to GitHub Pages | GitHub Actions |
 | Supply chain | Actions pinned to commit SHAs, tools pinned by SHA-256, the image pinned by digest | CI |
 
 ## Quickstart
@@ -30,7 +30,7 @@ Needs Docker, `make` and `bash`. `make tools` installs the pinned kubectl, kind,
 
 ```bash
 make tools                   # pinned CLI tools, checksum-verified
-make validate                # offline: render overlays, check schemas and policy
+make validate                # no cluster: render overlays, check schemas and policy
 
 make kind-up                 # kind cluster + metrics-server
 make deploy ENV=dev          # or stage / prod

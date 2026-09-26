@@ -1,10 +1,16 @@
 # Policy
 
-The lab enforces the same rules at two points, so a bad manifest fails in CI before it can fail in a cluster.
+Every rule is checked in CI, so a bad manifest fails before it reaches a cluster. The cluster then enforces most of them again at admission:
+
+| Rule | In CI | At admission |
+| --- | --- | --- |
+| CPU and memory requests and limits | Conftest | Gatekeeper |
+| Non-root, no privilege escalation | Conftest | Pod Security "restricted" |
+| Images from `ghcr.io`, pinned by digest | Conftest | not enforced |
 
 ## In CI: Conftest
 
-`policies/conftest/deployment.rego` (Rego v1) checks every workload in the rendered overlays:
+`policies/conftest/deployment.rego` (Rego v1) checks every Deployment, StatefulSet, DaemonSet, ReplicaSet, Job, CronJob and bare Pod in the rendered overlays, init containers included:
 
 - images come from `ghcr.io` and are pinned by digest;
 - every container sets CPU and memory requests and limits;

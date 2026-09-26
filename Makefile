@@ -18,7 +18,7 @@ bootstrap: ## install the pre-commit hooks
 lint: ## run every pre-commit hook on every file
 	pre-commit run --all-files
 
-validate: ## offline: render overlays, check schemas and policy
+validate: ## no cluster needed: render overlays, check schemas and policy
 	./scripts/validate.sh
 
 kind-up: ## create the kind cluster and install metrics-server
