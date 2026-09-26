@@ -1,5 +1,5 @@
 site_name: DevOps Superlab
-site_description: A full-stack DevOps Superlab by Enmanuel Mejia
+site_description: A Kubernetes, GitOps and policy-as-code lab by Enmanuel Mejia
 repo_url: https://github.com/EnmanuelMejia/devops-superlab
 theme:
   name: material
@@ -23,7 +23,7 @@ nav:
   - CI/CD:
       - Pipelines: cicd/pipelines.md
   - Apps:
-      - Services: apps/services.md
+      - Workload: apps/workload.md
   - Ops:
       - Observability: ops/observability.md
       - Policies: ops/policy.md

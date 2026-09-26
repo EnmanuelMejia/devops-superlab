@@ -1,22 +1,22 @@
 # DevOps SuperLab
 
-Interview-oriented **portfolio** stack for CI/CD, GitOps, Kustomize, HPAs, observability, and policy controls.
+A Kubernetes, GitOps, CI/CD and policy-as-code lab, built so every claim can be run and checked.
 
-> Not a paid production deployment — built to demonstrate cloud/DevOps skills clearly in interviews.
+> Portfolio lab, not a paid production deployment. It exists to demonstrate cloud and DevOps skills clearly in interviews.
 
 ## Highlights
 
-- CI/CD → tests, Docker Buildx → GHCR, SBOMs & scans (Trivy / related security workflow)
-- Kustomize-oriented env apply flows with HPA-oriented docs
-- Helm / OCI release workflow
-- kind bootstrap + metrics-server + ingress + observability docs (Prom/Grafana, Loki, Tempo, OTEL)
-- GitOps (Argo CD), policy (Gatekeeper) + Conftest, pre-commit, Renovate
+- **Environments:** dev, stage and prod Kustomize overlays over one workload ([podinfo](https://github.com/stefanprodan/podinfo)), with autoscaling, a disruption budget and topology spread in prod.
+- **Security by default:** every lab namespace enforces Pod Security "restricted"; the workload runs non-root with a read-only root filesystem and no Linux capabilities.
+- **Policy twice:** Conftest checks rendered manifests in CI; Gatekeeper rejects non-compliant pods at admission.
+- **GitOps:** Argo CD keeps the dev environment in sync with `main`.
+- **Proven in CI:** a GitHub Actions workflow creates a kind cluster, deploys every overlay, smoke-tests dev, proves the admission policy and waits for Argo CD to sync.
 
 ## Quick peek
 
 ```bash
-make bootstrap
+make tools
 make kind-up
-make kustomize-dev
-kubectl -n superlab-dev get deploy,svc,hpa
+make deploy ENV=dev
+make smoke ENV=dev
 ```
