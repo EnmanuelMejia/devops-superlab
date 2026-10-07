@@ -1,79 +1,54 @@
 # DevOps SuperLab
 
-**Portfolio lab (not paid production)** — an interview-ready Kubernetes / GitOps / CI/CD / IaC demo by [Enmanuel Mejia](https://github.com/EnmanuelMejia).
+A personal practice repository by [Enmanuel Mejia](https://github.com/EnmanuelMejia), pursuing junior cloud and DevOps roles with an IT support background. This lab provides inspectable exercises and starter designs; it does not represent a customer deployment or paid production ownership.
 
-Built to walk hiring managers through a live stack: local kind cluster, Kustomize overlays, Argo CD, GitHub Actions, policy gates, and observability docs.
+## Start with the implemented exercise
 
-> This repository demonstrates hands-on cloud/DevOps skills beyond paid IT operations experience. It is **not** a customer production deployment.
-
-## What you can demo
-
-| Area | What’s in the repo |
-| --- | --- |
-| Local cluster | `kind` bootstrap + ingress / metrics (`make kind-up`) |
-| Deploy | Kustomize-oriented Makefile targets for env apply flows |
-| GitOps | Argo CD install manifests + app-of-apps |
-| CI/CD | GitHub Actions: CI, security, docs, Helm OCI release |
-| Policy | Gatekeeper constraints + Conftest Rego |
-| Docs | MkDocs site (`docs/`) covering quickstart, GitOps, pipelines, ops |
-| Supply chain hygiene | pre-commit, Renovate |
-
-## Quickstart
+The included Python health service has HTTP tests, a non-root Dockerfile, resource limits, health probes, and Kustomize overlays for a disposable local kind cluster. The names `dev`, `stage`, and `prod` are **practice namespaces on the same local cluster**.
 
 ```bash
-# tooling hooks
-make bootstrap
-
-# local cluster
+# Python 3.13+, Bash, Docker, kind, kubectl, and make required for the whole flow.
+make test
+make build-images
 make kind-up
-
-# apply a documented env flow (see Makefile / docs)
+kind load docker-image ghcr.io/enmanuelmejia/devops-superlab/health-demo:lab --name superlab
 make kustomize-dev
-kubectl -n superlab-dev get deploy,svc,hpa
-
-# tear down
-make kind-down
+kubectl --context kind-superlab -n superlab-dev port-forward service/health-demo 8080:8080
+# In a second terminal: curl http://127.0.0.1:8080/health
+# When finished: stop port-forward, then make kind-down
 ```
 
-Full walkthrough: [`docs/quickstart.md`](docs/quickstart.md) · site config: [`mkdocs.yml`](mkdocs.yml)
+Tests run without Docker or a Kubernetes cluster. See the [quickstart](docs/quickstart.md) for Windows checks, prerequisites, expected output, and cleanup.
+
+## Implemented and planned scope
+
+| Area | Current source |
+| --- | --- |
+| Runnable sample | Standard-library Python health service; four real HTTP tests |
+| Local Kubernetes | One deployment/service; three namespace overlays; context-guarded apply scripts |
+| Verification | Service tests, mocked context safety checks, shell syntax, YAML/docs validation, image build in CI |
+| Documentation | [Published guide](https://enmanuelmejia.github.io/devops-superlab/) and [Labs overview](https://interstitiumlabs.dev/labs/superlab/) |
+| GitOps | Argo CD application example; controller and CRDs require a separate verified installation |
+| Policy | Conftest starter rule and Gatekeeper example; controller and constraint template are not bundled |
+| Observability | Architecture notes; no dashboards or monitoring stack installed by the quickstart |
+| Future services | Node, Go, .NET, Spring, gateway, and frontend designs; source is not yet included |
+
+The security workflow emits scan reports; a successful scan run is not proof that every finding was fixed. No registry login, image push, cloud deployment, or production cluster action occurs in pull-request CI.
 
 ## Repository map
 
-```
-.github/workflows/   CI, security scans, docs publish, validate, Helm OCI
-docs/                Interview-oriented documentation (MkDocs)
-gitops/argocd/       Argo CD install + app-of-apps
-policies/            Gatekeeper + Conftest
-scripts/             kind bootstrap, image build/push, tests, smoke checks
-Makefile             Operator entrypoints
-```
+- [samples/health-service/](samples/health-service/): implemented local exercise.
+- [kustomize/](kustomize/): base and local namespace overlays.
+- [scripts/](scripts/): tests, local image build, and guarded cluster operations.
+- [docs/](docs/): learning path and integration boundaries.
+- [gitops/](gitops/) and [policies/](policies/): examples with documented prerequisites.
+- [.github/workflows/](.github/workflows/): verification, scans, documentation, and optional future Helm release.
 
-## Honest scope (important for recruiters)
+The optional Fish scripts depend on private machine-local helpers; they are excluded from the portable quickstart. Terraform, HA, autoscaling, multi-service tracing, full GitOps automation, and production operations remain learning goals rather than completed claims.
 
-- **Is:** a structured portfolio / lab for demos and interviews.
-- **Is not:** evidence of paid production ownership at an employer.
-- Scripts such as `scripts/self-test.fish` still assume some host-local helpers (for example `~/devops-status.fish`). Treat those as optional machine-local wiring; the documented `make` targets and `docs/` are the portable path.
+## Author and contact
 
-## Stack
-
-Kubernetes · kind · Kustomize · Helm · Argo CD · GitHub Actions · Docker/Buildx · Gatekeeper · Conftest · Prometheus/Grafana docs · Terraform (IaC practices in lab narrative) · Linux
-
-## Author
-
-**Enmanuel Mejia** — Junior Cloud / DevOps candidate
-Orlando, FL · targeting Boston · Orlando · Miami–Fort Lauderdale · Remote
-GitHub: https://github.com/EnmanuelMejia
-Lab site: https://interstitiumlabs.dev/labs/superlab/
-LinkedIn: https://www.linkedin.com/in/enmanuelmejia
-
-
-## Interstitium Labs hub
-
-Public Learning OS page for this lab (student quickstart, stack map, honest scope):
-
-**https://interstitiumlabs.dev/labs/superlab/**
-
-[![Interstitium Labs](https://img.shields.io/badge/Interstitium%20Labs-SuperLab%20hub-5eead4?style=flat-square&labelColor=070B16)](https://interstitiumlabs.dev/labs/superlab/)
+[Portfolio](https://enmanueldmejia.com/) · [GitHub](https://github.com/EnmanuelMejia) · [LinkedIn](https://www.linkedin.com/in/enmanuelmejia) · [mejiaenmanueld@gmail.com](mailto:mejiaenmanueld@gmail.com)
 
 ## License
 

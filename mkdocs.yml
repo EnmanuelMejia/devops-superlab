@@ -1,5 +1,6 @@
 site_name: DevOps Superlab
-site_description: A full-stack DevOps Superlab by Enmanuel Mejia
+site_description: Personal local cloud and DevOps exercises by Enmanuel Mejia
+site_url: https://enmanuelmejia.github.io/devops-superlab/
 repo_url: https://github.com/EnmanuelMejia/devops-superlab
 theme:
   name: material

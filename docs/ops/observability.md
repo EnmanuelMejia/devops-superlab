@@ -1,8 +1,5 @@
-# Observability
+# Observability learning plan
 
-- kube-prometheus-stack (Prometheus/Grafana)
-- Loki/Promtail (logs)
-- Tempo (traces)
-- OpenTelemetry Collector (pipeline)
+Prometheus/Grafana metrics, Loki logs, Tempo traces, and OpenTelemetry collection are intended extensions. The current repository does not provide verified dashboards, auto-imported configurations, instrumentation, or a monitoring installation.
 
-Dashboards import automatically via Helm/kustomize values where applicable.
+The runnable sample supplies HTTP health probes only. First inspect its rollout and resource settings through the quickstart. Build a separate pinned monitoring exercise before claiming observability coverage.

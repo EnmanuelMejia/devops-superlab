@@ -1,22 +1,15 @@
 # DevOps SuperLab
 
-Interview-oriented **portfolio** stack for CI/CD, GitOps, Kustomize, HPAs, observability, and policy controls.
+A personal local lab for junior cloud and DevOps practice, built from an IT support background. It is not a customer production deployment.
 
-> Not a paid production deployment — built to demonstrate cloud/DevOps skills clearly in interviews.
+Begin with the [quickstart](quickstart.md): test one Python health service, build its local image, and deploy it to a disposable kind cluster. The dev, stage, and prod overlay names represent local practice namespaces.
 
-## Highlights
+## Inspect the evidence
 
-- CI/CD → tests, Docker Buildx → GHCR, SBOMs & scans (Trivy / related security workflow)
-- Kustomize-oriented env apply flows with HPA-oriented docs
-- Helm / OCI release workflow
-- kind bootstrap + metrics-server + ingress + observability docs (Prom/Grafana, Loki, Tempo, OTEL)
-- GitOps (Argo CD), policy (Gatekeeper) + Conftest, pre-commit, Renovate
+- Four HTTP tests cover health, scope, unknown paths, and unsupported write requests.
+- Context safety tests exercise rejected inputs and failed cluster creation with mocked tools.
+- Docker and Kubernetes sources use a non-root process, health probes, resource limits, and a read-only container filesystem.
+- CI validates tests, shell syntax, YAML, documentation, overlay rendering, and an image build without registry writes.
+- GitOps, policy controllers, and observability are integration examples or planned extensions, as labeled in their guides.
 
-## Quick peek
-
-```bash
-make bootstrap
-make kind-up
-make kustomize-dev
-kubectl -n superlab-dev get deploy,svc,hpa
-```
+[Portfolio](https://enmanueldmejia.com/) · [Interstitium Labs overview](https://interstitiumlabs.dev/labs/superlab/) · [Public contact](mailto:mejiaenmanueld@gmail.com)

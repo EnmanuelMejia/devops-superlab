@@ -1,35 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
-echo "[info] running language-specific tests if present"
-
-# Node
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+python3 -m unittest discover -s samples/health-service -p 'test_*.py' -v
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+# Optional future services run only when source is present; failures propagate.
 if [ -f services/node-express/package.json ]; then
-  (cd services/node-express && npm ci && npm test) || true
+  (cd services/node-express && npm ci && npm test)
 fi
-
-# Go
 if [ -d services/go-chi ]; then
-  (cd services/go-chi && go test ./...) || true
+  (cd services/go-chi && go test ./...)
 fi
-
-# .NET
 if [ -d services/dotnet-minimal ]; then
-  (cd services/dotnet-minimal && dotnet test) || true
+  (cd services/dotnet-minimal && dotnet test)
 fi
-
-# Java (Maven)
-if [ -d services/spring-boot ]; then
-  (cd services/spring-boot && ./mvnw -q -DskipITs -DskipIT -DskipITs=true -DskipTests=false test) || true
+if [ -f services/spring-boot/mvnw ]; then
+  (cd services/spring-boot && ./mvnw test)
 fi
-
-# Python (pytest if exists)
-if [ -f services/api-gateway/requirements.txt ] || ls services/*/requirements.txt >/dev/null 2>&1; then
-  for req in services/*/requirements.txt; do
-    [ -f "$req" ] || continue
-    svc=$(dirname "$req")
-    # shellcheck source=/dev/null  # the venv is created at run time
-    (cd "$svc" && python3 -m venv .venv && . .venv/bin/activate && pip -q install -r requirements.txt pytest && pytest -q) || true
-  done
-fi
-
-echo "[ok] tests completed"
+echo '[ok] tests passed for source present in this checkout'

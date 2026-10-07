@@ -5,6 +5,8 @@
 extends: default
 
 rules:
+  # Existing templates use CRLF; both supported line endings are accepted.
+  new-lines: disable
   # Workflows and manifests here start without "---".
   document-start: disable
   # GitHub Actions uses the bare key "on:".
