@@ -1,9 +1,7 @@
-# CI/CD Pipelines
+# CI/CD pipelines
 
-- **Build & Test**: language unit tests, Docker Buildx
-- **Security**: Trivy (fs/config/image), Checkov for IaC
-- **Kustomize Validate**: kubeconform against overlays
-- **SBOM**: Syft → upload as artifact
-- **Docs**: MkDocs → GitHub Pages
+The CI workflow runs actual service/context tests, shell syntax checks, YAML lint, a strict MkDocs build, client-side Kustomize rendering, three OPA registry-policy tests, and a local Docker image build. Pull requests have read-only repository permission; they do not log into GHCR, publish images, or deploy a cluster.
 
-Workflows live in `.github/workflows/`.
+The security workflow publishes Trivy reports and runs Checkov with `soft_fail`. Its green status alone is not a pass/fail vulnerability gate or evidence that findings were remediated.
+
+The documentation workflow builds before publishing GitHub Pages from main. A separate optional Helm release workflow anticipates future charts; no charts are currently included. Future services, SBOM publication, schema validation, and registry release gates require separate implementation and verification.

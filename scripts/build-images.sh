@@ -5,7 +5,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 IMG_BASE="ghcr.io/enmanuelmejia/devops-superlab"  # registry paths must be lowercase
 SERVICES=(api-gateway node-express go-chi dotnet-minimal spring-boot web-frontend)
-built=0
+docker build -t "$IMG_BASE/health-demo:lab" "$ROOT/samples/health-service"
+built=1
 for s in "${SERVICES[@]}"; do
   if [ ! -d "$ROOT/services/$s" ]; then
     echo "[skip] $s: services/$s is not in this repository"

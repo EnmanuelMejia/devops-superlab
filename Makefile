@@ -2,45 +2,45 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 help: ## show available targets
-	@awk 'BEGIN{FS=":.*##"; printf "\nTargets:\n"} /^[a-zA-Z0-9_.-]+:.*##/{printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN{FS=":.*##"} /^[a-zA-Z0-9_.-]+:.*##/{printf "  %-22s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-bootstrap: ## install dev tooling locally (pre-commit hooks)
-	pre-commit install -t pre-commit -t commit-msg || true
+bootstrap: ## install optional pre-commit hooks
+	pre-commit install -t pre-commit -t commit-msg
 
-lint: ## run multi-language linters
+lint: ## run optional multi-language linters
 	pre-commit run --all-files
 
-test: ## run unit tests where available
-	./scripts/run-tests.sh
+test: ## run actual service and lab-context tests
+	bash ./scripts/run-tests.sh
 
-build-images: ## build all service images locally (no push)
-	./scripts/build-images.sh
+build-images: ## build the local health demo and any present optional service
+	bash ./scripts/build-images.sh
 
-push-images: ## buildx + push to GHCR (requires GHCR login)
-	./scripts/push-images.sh
+push-images: ## explicit optional GHCR publish for future services
+	bash ./scripts/push-images.sh
 
-kustomize-dev: ## apply dev overlay
-	fish ./scripts/kustomize-apply-dev.fish
+kustomize-dev: ## apply dev to the local kind-superlab context
+	bash ./scripts/kustomize-apply.sh dev
 
-kustomize-stage: ## apply stage overlay
-	fish ./scripts/kustomize-apply-stage.fish
+kustomize-stage: ## apply stage to the local kind-superlab context
+	bash ./scripts/kustomize-apply.sh stage
 
-kustomize-prod: ## apply prod overlay
-	fish ./scripts/kustomize-apply-prod.fish
+kustomize-prod: ## apply the prod practice namespace on local kind
+	bash ./scripts/kustomize-apply.sh prod
 
-kind-up: ## create kind cluster + install addons (metrics, ingress, monitoring, logging)
-	./scripts/kind-superlab-up.sh
+kind-up: ## create or verify the disposable local superlab cluster
+	bash ./scripts/kind-superlab-up.sh
 
-kind-down: ## delete kind cluster
-	kind delete cluster --name superlab || true
+kind-down: ## delete only the named disposable superlab cluster
+	kind delete cluster --name superlab
 
-argocd-bootstrap: ## install Argo CD and app-of-apps
-	kubectl apply -f ./gitops/argocd/install
-	kubectl apply -f ./gitops/argocd/apps
+argocd-bootstrap: ## show GitOps integration prerequisites
+	@echo 'Argo CD controller/CRDs are not bundled. Read docs/gitops/argocd.md.'
+	@exit 1
 
-gatekeeper-bootstrap: ## install gatekeeper + starter constraints
-	kubectl apply -f ./policies/gatekeeper/install
-	kubectl apply -f ./policies/gatekeeper/constraints
+gatekeeper-bootstrap: ## show policy integration prerequisites
+	@echo 'Gatekeeper controller/templates are not bundled. Read docs/ops/policy.md.'
+	@exit 1
 
-docs-serve: ## serve MkDocs locally
-	mkdocs serve -a 0.0.0.0:8000
+docs-serve: ## serve documentation on localhost
+	mkdocs serve -a 127.0.0.1:8000
