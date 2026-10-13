@@ -1,6 +1,6 @@
 # DevOps SuperLab
 
-A personal local lab for junior cloud and DevOps practice, built from an IT support background. It is not a customer production deployment.
+A personal local lab for cloud and DevOps practice, built by an IT infrastructure engineer. It is not a customer production deployment.
 
 Begin with the [quickstart](quickstart.md): test one Python health service, build its local image, and deploy it to a disposable kind cluster. The dev, stage, and prod overlay names represent local practice namespaces.
 
