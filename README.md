@@ -1,6 +1,6 @@
 # DevOps SuperLab
 
-A personal practice repository by [Enmanuel Mejia](https://github.com/EnmanuelMejia), pursuing junior cloud and DevOps roles with an IT support background. This lab provides inspectable exercises and starter designs; it does not represent a customer deployment or paid production ownership.
+A personal practice repository by [Enmanuel Mejia](https://github.com/EnmanuelMejia), a cloud / DevOps engineer with an IT infrastructure and support-operations background. This lab provides inspectable exercises and starter designs; it does not represent a customer deployment or paid production ownership.
 
 ## Start with the implemented exercise
 
