@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: health-demo
+  # Overridden per environment by each overlay's kustomization namespace.
+  namespace: superlab-dev
 spec:
   replicas: 1
   selector:
@@ -16,10 +18,13 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
+        runAsGroup: 10001
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: health-demo
+          # First-party image from the owner's own GHCR registry; built locally for the lab.
+          # trivy:ignore:KSV-0125
           image: ghcr.io/enmanuelmejia/devops-superlab/health-demo:lab
           imagePullPolicy: Never
           ports:
